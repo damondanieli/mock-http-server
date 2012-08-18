@@ -105,8 +105,39 @@ Usage:
 
     ./bin/mock-http-server --help
 
-Request Simulation 
-------------------
+## Creating a Demonware Load Test Simulator
+
+1\. Clear out all files in the `fixtures` directory.
+
+    mv fixtures/*.response <backup location>
+
+2\. Put `mock-http-server` into record mode.
+
+    ./bin/mock-http-server 80 --record
+
+3\. Run a set of users through the Apica load test suite one-by-one.
+
+    (see Apica testing)
+
+Ideally, you will want to run several thousand users through the test suite and make sure that each user passes all tests.  
+
+4\. Prepare a user map for the simulator.
+
+At this point, you should have a lot of fixtures.  This process will go through the fixtures directory and create a mapping between usernames and user IDs.  This allows the simulator to return a valid user ID if the requested username from load testing does not below in the set of valid users.
+
+    ./create-template-usermap.rb
+
+Note: It will move all of the `*.response` files that are overriden by the templates or are invalid to the `./fixtures/archive` directory.
+
+5\. Run the Demonware Load Test Simulator
+
+    ./bin/mock-http-server 80 --simulator ./demonware-dwid-mapper/simulator.js
+
+Unrecorded users will be mapped at random to one of the previously recorded "valid" users.  This allows Apica to run millions of users even though we only have a small subset of valid response data recorded.
+
+
+
+## Request Simulation Details
 
 This section describes what request simulation is and how to set it up during playback mode. 
 
@@ -145,8 +176,8 @@ Here the simulator registers for a path with format `/users/:user_id`. When a re
 
 Notes:
 
-* Only `url.pathname` (e.g. `/path/here` from `http://somehost.com:9000/path/here?param1=blah`) is used for matching.
-* template path specified in simulator is relative to `` `pwd` ``
+* Do not specify query params in the path format. All query params from actual url will be available as variables in the template.
+* template path specified in simulator is relative to the simulator script
 
 ### Data transformation
 
