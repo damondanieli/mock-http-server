@@ -116,7 +116,9 @@ else
 end
 
 puts "Writing #{total_valid_users} users to #{USERS_FILENAME}"
-File.write(USERS_FILENAME, JSON.pretty_generate(username_to_id_map, {:indent => '  '}))
+File.open(USERS_FILENAME, "w") do |file|
+  file.write(JSON.pretty_generate(username_to_id_map, {:indent => '  '}))
+end
 puts "File write to #{USERS_FILENAME} succeeded"
 
 puts "Moving templatized and invalid files to #{ARCHIVE_DIRECTORY}"
