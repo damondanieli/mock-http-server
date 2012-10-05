@@ -19,7 +19,7 @@ $stderr.sync = true # Flush after writes
 
 FIXTURES_DIRECTORY = 'fixtures'
 ARCHIVE_DIRECTORY = 'fixtures/archive'
-USERS_FILENAME = 'users.json'
+USERS_FILENAME = "#{FIXTURES_DIRECTORY}/users.json"
 MIN_FIXTURES_PER_VALID_USER = 20
 SHOW_INVALID_USERS = false
 
@@ -61,8 +61,8 @@ userdata_array = []
 username_files.each do |userNameFile|
   json = File.read(userNameFile)
   response = JSON.parse(json)
-  body = JSON.parse(Base64.decode64(response['body64']))
-  if response['statusCode'] == 200 and body
+  if response['statusCode'] == 200 && response['headers'] && response['headers']['content-type'] == 'application/json'
+    body = JSON.parse(Base64.decode64(response['body64']))
     userdata = body['data'][0] # This request returns an array of one user or empty array
     if userdata
       userdata_array << userdata

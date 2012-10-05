@@ -2,7 +2,7 @@ module.exports = function(requestSimulator) {
   var crypto = require('crypto')
   var fs = require('fs')
 
-  var userMap = JSON.parse(fs.readFileSync('users.json'))
+  var userMap = JSON.parse(fs.readFileSync('fixtures/users.json'))
   var users=[]
   for (var k in userMap) { users.push(k) }
   var userCount = users.length
